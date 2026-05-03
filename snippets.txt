@@ -1,0 +1,65 @@
+=== snippet_1 ===
+GreenCorp Annual Sustainability Report 2024
+
+Environmental Performance
+Total CO2 emissions for fiscal year 2024: 12,500 metric tons.
+This represents a 5% reduction compared to FY2023.
+
+
+=== snippet_2 ===
+About NorthStar Industries
+
+NorthStar is committed to a sustainable future. We believe that
+business and environmental responsibility go hand in hand. Our
+long-term vision is to achieve net-zero operations by 2035 through
+investments in renewable energy and circular supply chains.
+
+
+=== snippet_3 ===
+BlueSky Logistics - Climate Disclosure 2024
+
+Greenhouse gas emissions:
+- Reporting period: Jan 2024 - Dec 2024
+- Total carbon dioxide output: 4.8 kilotons
+- Methodology: GHG Protocol Corporate Standard
+
+
+=== snippet_4 ===
+EuroFab S.A. - Rapport de Durabilité 2023
+
+Émissions totales de CO2 (exercice fiscal 2023): 1.234,56 tonnes métriques.
+Périmètre: ensemble des sites de production en Europe.
+Vérifié par un tiers indépendant.
+
+
+=== snippet_5 ===
+PowerGrid Holdings - ESG Highlights
+
+We are proud to report that in 2024 we reduced our Scope 1 carbon
+emissions by 15% compared to the previous year. In 2023, our Scope 1
+emissions stood at 8,000 tons of CO2.
+
+
+=== snippet_6 ===
+TechManufacturing Inc. - GHG Inventory 2024
+
+Scope 1 (direct emissions):       2,000 tCO2e
+Scope 2 (purchased electricity):  5,000 tCO2e
+Scope 3 (value chain):           50,000 tCO2e
+---------------------------------------------
+Total operational footprint:     57,000 tCO2e
+
+Note: "Annual emissions" in our public commitments refers to Scope 1 only.
+
+
+=== snippet_7 ===
+Helios Energy Group - Environmental KPIs (Q4 2024)
+
+| Metric                          | 2022    | 2023    | 2024    | Unit    |
+|---------------------------------|---------|---------|---------|---------|
+| Total CO2 emissions             | 18,400  | 17,200  | 15,900  | tCO2e   |
+| Water withdrawal                | 245     | 238     | 221     | ML      |
+| Renewable energy share          | 42      | 51      | 63      | %       |
+| Waste recycled                  | 78      | 82      | 88      | %       |
+
+All figures verified by EcoAudit Ltd. under ISO 14064 standard.

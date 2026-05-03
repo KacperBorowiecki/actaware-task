@@ -1,0 +1,23 @@
+{
+  "snippet_1": [
+    { "value": 12500.0, "year": 2024 }
+  ],
+  "snippet_2": [],
+  "snippet_3": [
+    { "value": 4800.0, "year": 2024 }
+  ],
+  "snippet_4": [
+    { "value": 1234.56, "year": 2023 }
+  ],
+  "snippet_5": [
+    { "value": 8000.0, "year": 2023 }
+  ],
+  "snippet_6": [
+    { "value": 2000.0, "year": 2024 }
+  ],
+  "snippet_7": [
+    { "value": 18400.0, "year": 2022 },
+    { "value": 17200.0, "year": 2023 },
+    { "value": 15900.0, "year": 2024 }
+  ]
+}
