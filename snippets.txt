@@ -63,3 +63,21 @@ Helios Energy Group - Environmental KPIs (Q4 2024)
 | Waste recycled                  | 78      | 82      | 88      | %       |
 
 All figures verified by EcoAudit Ltd. under ISO 14064 standard.
+
+
+=== snippet_8 ===
+TechManufacturing Inc. - GHG Inventory 2024
+
+Scope 1 (direct emissions):       2,000 tCO2e
+Scope 2 (purchased electricity):  5,000 tCO2e
+Scope 3 (value chain):           50,000 tCO2e
+---------------------------------------------
+Total operational footprint:     57,000 tCO2e
+
+
+=== snippet_9 ===
+TechManufacturing Inc. - GHG Inventory 2024
+
+Scope 1 (direct emissions):       2,000 tCO2e
+Scope 2 (purchased electricity):  5,000 tCO2e
+Scope 3 (value chain):           50,000 tCO2e

@@ -184,7 +184,7 @@ class TestParseSnippets:
     def test_parses_real_file(self):
         text = (HERE / "snippets.txt").read_text(encoding="utf-8")
         result = parse_snippets(text)
-        assert set(result.keys()) == {f"snippet_{i}" for i in range(1, 8)}
+        assert set(result.keys()) == {f"snippet_{i}" for i in range(1, 10)}
 
 
 class TestResume:
@@ -246,7 +246,7 @@ def actual_output():
 
 
 class TestE2E:
-    @pytest.mark.parametrize("snippet_id", [f"snippet_{i}" for i in range(1, 8)])
+    @pytest.mark.parametrize("snippet_id", [f"snippet_{i}" for i in range(1, 10)])
     def test_matches_expected(self, actual_output, expected_output, snippet_id):
         assert actual_output[snippet_id] == expected_output[snippet_id], (
             f"\n{snippet_id} mismatch:\n"

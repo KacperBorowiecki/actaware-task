@@ -74,23 +74,56 @@ class ExtractionResult(BaseModel):
     entries: list[RawEntry]
 
 
-EXTRACTION_PROMPT = """You are extracting CO2 emissions data from an excerpt of a corporate sustainability report.
+EXTRACTION_PROMPT = """You are extracting CO2 emissions data from a corporate sustainability report excerpt.
 
-For each CO2 emissions value EXPLICITLY stated for a specific reporting year, return:
-- value: the number parsed as a float. Handle European format ("1.234,56" -> 1234.56) and US format ("12,500" -> 12500.0).
-- unit: the unit of measurement EXACTLY as it appears in the text (e.g. "metric tons", "kilotons", "tonnes metriques", "tCO2e"). Do NOT translate it. Return only the unit itself: strip any trailing qualifier such as "of CO2", "of CO2e", or "of GHG" (e.g. "500 tons of CO2" -> unit is "tons").
-- year: the reporting year as an integer.
-- evidence: the EXACT verbatim substring from the snippet that contains this value (will be checked for a literal match).
+Each output entry has: value (float), unit (str), year (int), evidence (str).
+- value: parse the number (US "12,500" -> 12500.0, EU "1.234,56" -> 1234.56).
+- unit: as it appears in text; strip trailing "of CO2", "of CO2e", "of GHG".
+- year: integer.
+- evidence: exact verbatim substring containing the value (literal match).
 
-DEFINITIONS (per the GHG Protocol):
-- "CO2 emissions" covers Scope 1 (direct), Scope 2 (purchased energy), Scope 3 (value chain), and Total emissions. All are valid values to extract when explicitly stated for a specific year unless directly mentioned which one refers to annual emission.
+KEY CONCEPT — why "Total" matters (per GHG Protocol):
+A "Total" CO2 figure ALREADY INCLUDES Scope 1 + Scope 2 + Scope 3 added together.
+Scopes are the breakdown components of the Total, NOT separate annual emissions.
+Returning Total AND its scopes would DOUBLE-COUNT the same emissions.
 
-STRICT RULES:
-1. Extract only values that are EXPLICITLY stated as numbers. Do NOT calculate or infer values from percentages, year-over-year changes, or comparisons (e.g., "reduced by 15% vs 2023" does NOT yield a 2024 value).
-2. If the snippet contains a note/footnote/qualifier defining which value should be considered the company's reported annual emissions, follow that definition and return ONLY the matching value.
-3. If the same emissions metric is reported for multiple years (e.g. a multi-year table), return one entry per year.
-4. Do NOT extract non-CO2 metrics (water, waste, energy share, renewable share, etc.).
-5. If no CO2 emissions value is explicitly tied to a year, return an empty array.
+PROCEDURE — follow in order, stop at the first match:
+
+STEP 1 — Look for an OVERRIDE note (e.g., "Annual emissions refers to Scope X only").
+   IF FOUND: output exactly 1 entry — the value the note refers to. STOP.
+
+STEP 2 — Look for a "Total" CO2 value (e.g., "Total CO2 emissions", "Total
+   operational footprint", "Total GHG emissions"). NO override note exists.
+   IF FOUND: output exactly 1 entry per year — the Total. DISCARD Scope 1/2/3
+   (they are inside the Total). For multi-year Total tables, one entry per year. STOP.
+
+STEP 3 — No override, no Total.
+   Output every CO2 value explicitly tied to a year (typically the individual scopes).
+
+EXAMPLES (placeholders A, B, C, D — show the PATTERN, not real data):
+
+Pattern with Total + scopes (STEP 2):
+   "Scope 1: A | Scope 2: B | Scope 3: C | Total: D"  in year Y
+   CORRECT: [{{"value": D, "year": Y, ...}}]
+   WRONG:   [{{"value": A}}, {{"value": B}}, {{"value": C}}, {{"value": D}}]   <-- double counts
+
+Pattern with override note (STEP 1):
+   "Scope 1: A | Scope 2: B | Total: D | Note: Annual = Scope 1 only"  in year Y
+   CORRECT: [{{"value": A, "year": Y, ...}}]
+
+Pattern with only scopes, no Total (STEP 3):
+   "Scope 1: A | Scope 2: B | Scope 3: C"  in year Y
+   CORRECT: [{{"value": A, "year": Y, ...}}, {{"value": B, "year": Y, ...}}, {{"value": C, "year": Y, ...}}]
+
+Multi-year Total table (STEP 2):
+   "Total | 2022: A | 2023: B | 2024: C"
+   CORRECT: [{{"value": A, "year": 2022, ...}}, {{"value": B, "year": 2023, ...}}, {{"value": C, "year": 2024, ...}}]
+
+ALWAYS:
+- ONLY explicitly stated numbers. NEVER infer from percentages or YoY changes
+  ("reduced 15% vs 2023" yields NO 2024 value).
+- Skip non-CO2 metrics (water, waste, energy share, renewable share).
+- If no CO2 value is tied to a year, return an empty array.
 
 Snippet:
 ---
