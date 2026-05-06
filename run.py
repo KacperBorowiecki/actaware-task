@@ -6,7 +6,7 @@ import json
 import logging
 from pathlib import Path
 
-from extractor import get_client, parse_snippets, process_snippet
+from extractor import get_llm_client, parse_snippets, process_snippet
 
 
 HERE = Path(__file__).parent
@@ -55,6 +55,10 @@ def main() -> None:
     parser.add_argument("--output", default="output.json", help="Output JSON (also state file during run).")
     parser.add_argument("--log", default="extractor.log", help="Log file path.")
     parser.add_argument("--resume", action="store_true", help="Skip snippets already processed in the existing output file.")
+    parser.add_argument("--client", choices=["gemini", "ollama"], default=None,
+                        help="LLM client backend. Overrides LLM_CLIENT env var. Default: env or 'gemini'.")
+    parser.add_argument("--model", default=None,
+                        help="Model name for the chosen client (e.g. 'gemini-3.1-flash-lite-preview' or 'gemma3:12b'). Overrides GEMINI_MODEL/OLLAMA_MODEL env vars. Must be in the client's ALLOWED_MODELS.")
     parser.add_argument("--verbose", "-v", action="store_true", help="Enable DEBUG logging.")
     args = parser.parse_args()
 
@@ -76,7 +80,8 @@ def main() -> None:
     logger.info("Processing %d snippets (skipping %d already done)", len(pending_ids), skipped)
 
     if pending_ids:
-        client = get_client()
+        client = get_llm_client(name=args.client, model=args.model)
+        logger.info("LLM client: %s (model=%s)", type(client).__name__, client._model)
         for sid in pending_ids:
             logger.info("Processing %s", sid)
             try:

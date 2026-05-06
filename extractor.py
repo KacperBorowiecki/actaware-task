@@ -4,6 +4,10 @@ Pipeline per snippet:
     LLM (structured output) -> grounding check -> unit normalization -> conversion
 The LLM extracts raw value/unit/year/evidence verbatim from the text;
 the code handles grounding, unit normalization, and arithmetic conversion.
+
+LLM client is selected via the `LLM_CLIENT` env var: "gemini" (default) or
+"ollama". Add a new backend by implementing the LLMClient protocol and adding
+a branch to `get_llm_client`.
 """
 from __future__ import annotations
 
@@ -12,18 +16,19 @@ import os
 import re
 import unicodedata
 from datetime import datetime
+from typing import ClassVar, Protocol
 
 from dotenv import load_dotenv
-from google import genai
-from google.genai import types
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ValidationError
 
 
 load_dotenv()
 logger = logging.getLogger(__name__)
 
 
-MODEL_NAME = os.environ.get("GEMINI_MODEL", "gemini-3.1-flash-lite-preview")
+GEMINI_MODEL = os.environ.get("GEMINI_MODEL", "gemini-3.1-flash-lite-preview")
+OLLAMA_MODEL = os.environ.get("OLLAMA_MODEL", "gemma4:e2b")
+OLLAMA_HOST = os.environ.get("OLLAMA_HOST", "http://localhost:11434")
 
 
 # Whitelist of unit -> conversion factor (to metric tons).
@@ -145,41 +150,139 @@ def is_plausible_year(year: int) -> bool:
     return 1900 <= year <= datetime.now().year
 
 
-def get_client() -> genai.Client:
-    api_key = os.environ.get("GEMINI_API_KEY")
-    if not api_key:
-        raise RuntimeError("GEMINI_API_KEY not set. Add it to .env.")
-    return genai.Client(api_key=api_key)
+def _validate_model(model: str, allowed: set[str] | None, client_name: str) -> None:
+    """Raise ValueError if `model` is not in the client's allowed list (None = any)."""
+    if allowed is not None and model not in allowed:
+        raise ValueError(
+            f"Model {model!r} is not allowed for {client_name}. "
+            f"Allowed models: {sorted(allowed)}. "
+            f"To use a new model, add it to {client_name}.ALLOWED_MODELS."
+        )
+
+
+class LLMClient(Protocol):
+    """Returns raw (pre-validation) entries extracted from a snippet."""
+    ALLOWED_MODELS: ClassVar[set[str] | None]
+    def extract(self, snippet_text: str, snippet_id: str = "?") -> list[RawEntry]: ...
+
+
+class GeminiClient:
+    """Google Gemini via google-genai SDK with native structured output."""
+
+    # Whitelist of models we have verified to work with this client.
+    # Extend with care — new models may not support response_schema.
+    ALLOWED_MODELS: ClassVar[set[str]] = {
+        "gemini-3.1-flash-lite-preview",
+        "gemini-2.5-flash",
+        "gemini-2.5-pro",
+        "gemma-4-26b-a4b-it",
+    }
+
+    def __init__(self, model: str | None = None) -> None:
+        from google import genai
+        api_key = os.environ.get("GEMINI_API_KEY")
+        if not api_key:
+            raise RuntimeError("GEMINI_API_KEY not set. Add it to .env.")
+        self._model = model or GEMINI_MODEL
+        _validate_model(self._model, self.ALLOWED_MODELS, "GeminiClient")
+        self._genai = genai
+        self._client = genai.Client(api_key=api_key)
+
+    def extract(self, snippet_text: str, snippet_id: str = "?") -> list[RawEntry]:
+        from google.genai import types
+        response = self._client.models.generate_content(
+            model=self._model,
+            contents=EXTRACTION_PROMPT.format(snippet_text=snippet_text),
+            config=types.GenerateContentConfig(
+                temperature=0.0,
+                response_mime_type="application/json",
+                response_schema=ExtractionResult,
+            ),
+        )
+        parsed: ExtractionResult | None = response.parsed
+        if parsed is None:
+            logger.warning(
+                "[%s] Gemini returned no parseable result (response.parsed is None)",
+                snippet_id,
+            )
+            return []
+        return parsed.entries
+
+
+class OllamaClient:
+    """Local Ollama via the official ollama package. Requires ollama>=0.4 for
+    JSON-schema structured output (passes Pydantic schema as `format`)."""
+
+    # Whitelist of locally-pulled models we have verified to work with the
+    # `format=<json_schema>` API. Set to `None` to disable gating entirely
+    # (any locally-pulled model accepted).
+    ALLOWED_MODELS: ClassVar[set[str] | None] = {
+        "gemma4:e2b",
+        "gemma3:4b",
+        "gemma3:12b",
+    }
+
+    def __init__(self, model: str | None = None) -> None:
+        try:
+            import ollama
+        except ImportError as exc:
+            raise RuntimeError(
+                "ollama package not installed. Run: pip install ollama"
+            ) from exc
+        self._model = model or OLLAMA_MODEL
+        _validate_model(self._model, self.ALLOWED_MODELS, "OllamaClient")
+        self._client = ollama.Client(host=OLLAMA_HOST)
+
+    def extract(self, snippet_text: str, snippet_id: str = "?") -> list[RawEntry]:
+        response = self._client.chat(
+            model=self._model,
+            messages=[{
+                "role": "user",
+                "content": EXTRACTION_PROMPT.format(snippet_text=snippet_text),
+            }],
+            format=ExtractionResult.model_json_schema(),
+            options={"temperature": 0.0},
+        )
+        content = response["message"]["content"]
+        try:
+            parsed = ExtractionResult.model_validate_json(content)
+        except ValidationError as exc:
+            logger.warning(
+                "[%s] Ollama returned unparseable JSON: %s (raw: %r)",
+                snippet_id, exc, content[:200],
+            )
+            return []
+        return parsed.entries
+
+
+def get_llm_client(name: str | None = None, model: str | None = None) -> LLMClient:
+    """Factory: returns an LLMClient chosen by `name` or LLM_CLIENT env var.
+
+    `name` and `model` override the corresponding env vars when given (useful
+    for CLI flags). Pass None for either to fall back to the env / default.
+    Raises ValueError if the model is not in the chosen client's ALLOWED_MODELS.
+    """
+    name = (name or os.environ.get("LLM_CLIENT", "gemini")).lower()
+    if name == "gemini":
+        return GeminiClient(model=model)
+    if name == "ollama":
+        return OllamaClient(model=model)
+    raise ValueError(f"Unknown LLM_CLIENT: {name!r}. Use 'gemini' or 'ollama'.")
 
 
 def extract_with_llm(
     snippet_text: str,
-    client: genai.Client,
+    client: LLMClient,
     snippet_id: str = "?",
 ) -> list[RawEntry]:
-    """Call Gemini with structured output. Returns raw (unvalidated) entries."""
-    response = client.models.generate_content(
-        model=MODEL_NAME,
-        contents=EXTRACTION_PROMPT.format(snippet_text=snippet_text),
-        config=types.GenerateContentConfig(
-            temperature=0.0,
-            response_mime_type="application/json",
-            response_schema=ExtractionResult,
-        ),
-    )
-    parsed: ExtractionResult = response.parsed
-    if parsed is None:
-        logger.warning(
-            "[%s] LLM returned no parseable result (response.parsed is None)",
-            snippet_id,
-        )
-        return []
-    return parsed.entries
+    """Thin wrapper over client.extract — kept as a module-level function so
+    tests can monkeypatch it without instantiating any concrete client."""
+    return client.extract(snippet_text, snippet_id=snippet_id)
 
 
 def process_snippet(
     snippet_text: str,
-    client: genai.Client,
+    client: LLMClient,
     snippet_id: str = "?",
 ) -> list[dict]:
     """Full pipeline for a single snippet: extract -> ground -> convert -> serialize.
@@ -219,7 +322,7 @@ def process_all(snippets: dict[str, str]) -> dict[str, list[dict]]:
     A failure on one snippet (e.g. transient LLM error) is logged and yields `[]`
     for that snippet, so the rest of the batch still completes.
     """
-    client = get_client()
+    client = get_llm_client()
     out: dict[str, list[dict]] = {}
     for sid, text in snippets.items():
         try:
