@@ -83,7 +83,7 @@ For each CO2 emissions value EXPLICITLY stated for a specific reporting year, re
 - evidence: the EXACT verbatim substring from the snippet that contains this value (will be checked for a literal match).
 
 DEFINITIONS (per the GHG Protocol):
-- "CO2 emissions" covers Scope 1 (direct), Scope 2 (purchased energy), Scope 3 (value chain), and Total emissions. All are valid values to extract when explicitly stated for a specific year.
+- "CO2 emissions" covers Scope 1 (direct), Scope 2 (purchased energy), Scope 3 (value chain), and Total emissions. All are valid values to extract when explicitly stated for a specific year unless directly mentioned which one refers to annual emission.
 
 STRICT RULES:
 1. Extract only values that are EXPLICITLY stated as numbers. Do NOT calculate or infer values from percentages, year-over-year changes, or comparisons (e.g., "reduced by 15% vs 2023" does NOT yield a 2024 value).
