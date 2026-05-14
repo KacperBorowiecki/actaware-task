@@ -65,6 +65,38 @@ pytest -v                      # full suite (E2E hits the LLM once per session)
 pytest -v -k "not TestE2E"     # offline only (no API key required)
 ```
 
+## Benchmarks & Docker
+
+Beyond the core extraction task, this repo includes a benchmarking suite that
+explores Ollama concurrency strategies, GPU sharing, mixed embedder+LLM
+workloads, and Docker deployment. Full writeups in [docs/](docs/).
+
+Quick commands:
+
+```bash
+python benchmark.py                          # per-model speed comparison (sequential)
+python benchmark_parallel.py                 # 4 concurrency strategies × parallelism levels
+python benchmark_mixed.py                    # mixed workload: embeddings + generation concurrent
+python verbose_run.py test_prompt.txt        # ollama-run-style verbose timing of a single prompt
+```
+
+Docker deployment (Ollama runs in container, benchmark from host):
+
+```bash
+docker compose --profile single up -d        # 1 Ollama instance on :11434
+docker compose --profile dual up -d          # 2 instances on :11434 + :11435 (shared GPU)
+docker compose down
+```
+
+Analysis writeups:
+- [docs/BENCHMARK_SUMMARY.md](docs/BENCHMARK_SUMMARY.md) — 1-pager for sharing, 5 key findings
+- [docs/OLLAMA_CONCURRENCY_NOTES.md](docs/OLLAMA_CONCURRENCY_NOTES.md) — full log of NP=4/16/24/32/64 rounds
+- [docs/DOCKER.md](docs/DOCKER.md) — Docker quick-start
+- [docs/LLAMACPP_INT_MAX_BUG.md](docs/LLAMACPP_INT_MAX_BUG.md) — upstream bug repro at high NP × ctx
+- [docs/HF_BF16_NOTES.md](docs/HF_BF16_NOTES.md) — HuggingFace bf16 backend notes
+
+Raw per-request metrics and aggregate summaries live in [results/](results/).
+
 ## Files
 
 | File | Role |
@@ -75,3 +107,10 @@ pytest -v -k "not TestE2E"     # offline only (no API key required)
 | `expected_output.json` | golden dataset (ground truth for E2E tests) |
 | `output.json` | extraction result |
 | `WRITEUP.md` | approach, assumptions, edge cases, scaling discussion |
+| `benchmark.py` | per-model speed comparison (Gemini + Ollama, sequential) |
+| `benchmark_parallel.py` | 4-approach concurrency benchmark (single/dual instance × seq/parallel) |
+| `benchmark_mixed.py` | mixed workload — embedder + LLM co-existence on one Ollama |
+| `verbose_run.py` | helper mimicking `ollama run --verbose` (incl. JSON-schema mode) |
+| `docker-compose.yml` | Ollama orchestration, profiles: `single` / `dual` |
+| `docs/` | all analysis writeups (benchmark summary, concurrency notes, bugs, Docker) |
+| `results/` | per-request JSONL + aggregate summary JSON from every benchmark run |
