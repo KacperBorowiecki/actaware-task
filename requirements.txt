@@ -3,3 +3,14 @@ ollama>=0.4.0
 pydantic>=2.0.0
 python-dotenv>=1.0.0
 pytest>=8.0.0
+nvidia-ml-py>=12.0
+
+# Optional: local BF16 inference for run_hf.py (HuggingFace + constrained decoding).
+# Install torch/torchvision from the matching CUDA wheel index:
+#   pip install --index-url https://download.pytorch.org/whl/cu128 torch torchvision
+# (cu128 for RTX 5090 / Blackwell; pick cu121 for older GPUs.)
+torch>=2.7
+torchvision>=0.22
+transformers>=5.0
+accelerate>=1.0
+outlines>=1.2
