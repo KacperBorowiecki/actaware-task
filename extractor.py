@@ -220,6 +220,7 @@ class GeminiClient:
         _validate_model(self._model, self.ALLOWED_MODELS, "GeminiClient")
         self._genai = genai
         self._client = genai.Client(api_key=api_key)
+        self.last_metrics: dict | None = None
 
     def extract(self, snippet_text: str, snippet_id: str = "?") -> list[RawEntry]:
         from google.genai import types
@@ -232,6 +233,12 @@ class GeminiClient:
                 response_schema=ExtractionResult,
             ),
         )
+        um = getattr(response, "usage_metadata", None)
+        self.last_metrics = {
+            "prompt_tokens": getattr(um, "prompt_token_count", None),
+            "completion_tokens": getattr(um, "candidates_token_count", None),
+            "total_tokens": getattr(um, "total_token_count", None),
+        }
         parsed: ExtractionResult | None = response.parsed
         if parsed is None:
             logger.warning(
@@ -251,11 +258,14 @@ class OllamaClient:
     # (any locally-pulled model accepted).
     ALLOWED_MODELS: ClassVar[set[str] | None] = {
         "gemma4:e2b",
+        "gemma4:e4b",
         "gemma3:4b",
         "gemma3:12b",
+        "gemma3:27b",
+        "qwen3:30b-a3b-q8_0",
     }
 
-    def __init__(self, model: str | None = None) -> None:
+    def __init__(self, model: str | None = None, host: str | None = None) -> None:
         try:
             import ollama
         except ImportError as exc:
@@ -264,7 +274,9 @@ class OllamaClient:
             ) from exc
         self._model = model or OLLAMA_MODEL
         _validate_model(self._model, self.ALLOWED_MODELS, "OllamaClient")
-        self._client = ollama.Client(host=OLLAMA_HOST)
+        self._host = host or OLLAMA_HOST
+        self._client = ollama.Client(host=self._host)
+        self.last_metrics: dict | None = None
 
     def extract(self, snippet_text: str, snippet_id: str = "?") -> list[RawEntry]:
         response = self._client.chat(
@@ -276,6 +288,14 @@ class OllamaClient:
             format=ExtractionResult.model_json_schema(),
             options={"temperature": 0.0},
         )
+        self.last_metrics = {
+            "prompt_tokens": response.get("prompt_eval_count"),
+            "completion_tokens": response.get("eval_count"),
+            "load_duration_ns": response.get("load_duration"),
+            "prompt_eval_duration_ns": response.get("prompt_eval_duration"),
+            "eval_duration_ns": response.get("eval_duration"),
+            "total_duration_ns": response.get("total_duration"),
+        }
         content = response["message"]["content"]
         try:
             parsed = ExtractionResult.model_validate_json(content)
@@ -288,18 +308,23 @@ class OllamaClient:
         return parsed.entries
 
 
-def get_llm_client(name: str | None = None, model: str | None = None) -> LLMClient:
+def get_llm_client(
+    name: str | None = None,
+    model: str | None = None,
+    host: str | None = None,
+) -> LLMClient:
     """Factory: returns an LLMClient chosen by `name` or LLM_CLIENT env var.
 
     `name` and `model` override the corresponding env vars when given (useful
-    for CLI flags). Pass None for either to fall back to the env / default.
+    for CLI flags). `host` only applies to Ollama and overrides `OLLAMA_HOST`.
+    Pass None for any to fall back to the env / default.
     Raises ValueError if the model is not in the chosen client's ALLOWED_MODELS.
     """
     name = (name or os.environ.get("LLM_CLIENT", "gemini")).lower()
     if name == "gemini":
         return GeminiClient(model=model)
     if name == "ollama":
-        return OllamaClient(model=model)
+        return OllamaClient(model=model, host=host)
     raise ValueError(f"Unknown LLM_CLIENT: {name!r}. Use 'gemini' or 'ollama'.")
 
 
