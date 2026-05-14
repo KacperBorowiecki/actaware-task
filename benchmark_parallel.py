@@ -377,10 +377,10 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--expected", default="expected_output.json",
                    help="Expected outputs JSON for correctness scoring. "
                         "Default: expected_output.json. Empty to disable.")
-    p.add_argument("--out", default="benchmarks_parallel.jsonl",
-                   help="JSONL output path. Default: benchmarks_parallel.jsonl")
-    p.add_argument("--summary", default="summary_parallel.json",
-                   help="Summary JSON path. Default: summary_parallel.json")
+    p.add_argument("--out", default="results/benchmarks_parallel.jsonl",
+                   help="JSONL output path. Default: results/benchmarks_parallel.jsonl")
+    p.add_argument("--summary", default="results/summary_parallel.json",
+                   help="Summary JSON path. Default: results/summary_parallel.json")
     return p.parse_args()
 
 

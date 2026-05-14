@@ -1,0 +1,322 @@
+{
+  "generated_at": "2026-05-12T20:11:31Z",
+  "total_duration_ms": 293283.34,
+  "repeats": 1,
+  "snippets_count": 9,
+  "gpu_vram_baseline_used_mb": 3644,
+  "models": [
+    {
+      "client": "gemini",
+      "model": "gemini-3.1-flash-lite-preview",
+      "n_runs": 9,
+      "n_errors": 0,
+      "n_correct": 9,
+      "n_scored": 9,
+      "accuracy_pct": 100.0,
+      "total_duration_ms": 13180.22,
+      "cold_load_duration_ms": null,
+      "gpu_vram_used_mb": null,
+      "gpu_vram_delta_mb": null,
+      "wall_duration_ms": {
+        "mean": 1464.47,
+        "median": 1244.56,
+        "min": 685.51,
+        "max": 3920.7
+      },
+      "prompt_tokens": {
+        "mean": 894.22,
+        "median": 877,
+        "min": 863,
+        "max": 1004
+      },
+      "completion_tokens": {
+        "mean": 97.22,
+        "median": 74,
+        "min": 9,
+        "max": 216
+      },
+      "eval_tps": null,
+      "prompt_eval_tps": null,
+      "wall_tps": {
+        "mean": 76.79,
+        "median": 63.75,
+        "min": 13.13,
+        "max": 173.26
+      }
+    },
+    {
+      "client": "ollama",
+      "model": "gemma4:e2b",
+      "n_runs": 9,
+      "n_errors": 0,
+      "n_correct": 9,
+      "n_scored": 9,
+      "accuracy_pct": 100.0,
+      "total_duration_ms": 24709.72,
+      "cold_load_duration_ms": 4555.7,
+      "gpu_vram_used_mb": 12945,
+      "gpu_vram_delta_mb": 9301,
+      "wall_duration_ms": {
+        "mean": 2745.52,
+        "median": 2670.92,
+        "min": 1494.42,
+        "max": 3510.73
+      },
+      "prompt_tokens": {
+        "mean": 913.56,
+        "median": 896,
+        "min": 882,
+        "max": 1024
+      },
+      "completion_tokens": {
+        "mean": 88.44,
+        "median": 74,
+        "min": 10,
+        "max": 208
+      },
+      "eval_tps": {
+        "mean": 300.42,
+        "median": 299.35,
+        "min": 293.22,
+        "max": 312.03
+      },
+      "prompt_eval_tps": {
+        "mean": 77480.83,
+        "median": 81047.21,
+        "min": 60876.95,
+        "max": 97779.9
+      },
+      "wall_tps": {
+        "mean": 29.87,
+        "median": 24.81,
+        "min": 6.69,
+        "max": 64.81
+      }
+    },
+    {
+      "client": "gemini",
+      "model": "gemini-2.5-flash",
+      "n_runs": 9,
+      "n_errors": 0,
+      "n_correct": 9,
+      "n_scored": 9,
+      "accuracy_pct": 100.0,
+      "total_duration_ms": 27439.0,
+      "cold_load_duration_ms": null,
+      "gpu_vram_used_mb": null,
+      "gpu_vram_delta_mb": null,
+      "wall_duration_ms": {
+        "mean": 3048.78,
+        "median": 2625.17,
+        "min": 2185.12,
+        "max": 6075.38
+      },
+      "prompt_tokens": {
+        "mean": 894.22,
+        "median": 877,
+        "min": 863,
+        "max": 1004
+      },
+      "completion_tokens": {
+        "mean": 70.11,
+        "median": 59,
+        "min": 5,
+        "max": 160
+      },
+      "eval_tps": null,
+      "prompt_eval_tps": null,
+      "wall_tps": {
+        "mean": 22.31,
+        "median": 22.23,
+        "min": 2.18,
+        "max": 45.3
+      }
+    },
+    {
+      "client": "ollama",
+      "model": "gemma4:e4b",
+      "n_runs": 9,
+      "n_errors": 0,
+      "n_correct": 9,
+      "n_scored": 9,
+      "accuracy_pct": 100.0,
+      "total_duration_ms": 33313.59,
+      "cold_load_duration_ms": 4852.35,
+      "gpu_vram_used_mb": 27285,
+      "gpu_vram_delta_mb": 23641,
+      "wall_duration_ms": {
+        "mean": 3701.51,
+        "median": 3507.23,
+        "min": 2306.32,
+        "max": 6106.69
+      },
+      "prompt_tokens": {
+        "mean": 913.56,
+        "median": 896,
+        "min": 882,
+        "max": 1024
+      },
+      "completion_tokens": {
+        "mean": 82.56,
+        "median": 55,
+        "min": 10,
+        "max": 278
+      },
+      "eval_tps": {
+        "mean": 204.71,
+        "median": 204.27,
+        "min": 200.38,
+        "max": 214.09
+      },
+      "prompt_eval_tps": {
+        "mean": 63502.95,
+        "median": 64059.27,
+        "min": 47978.69,
+        "max": 75433.34
+      },
+      "wall_tps": {
+        "mean": 19.43,
+        "median": 15.52,
+        "min": 4.34,
+        "max": 45.52
+      }
+    },
+    {
+      "client": "gemini",
+      "model": "gemini-2.5-pro",
+      "n_runs": 9,
+      "n_errors": 0,
+      "n_correct": 9,
+      "n_scored": 9,
+      "accuracy_pct": 100.0,
+      "total_duration_ms": 74425.71,
+      "cold_load_duration_ms": null,
+      "gpu_vram_used_mb": null,
+      "gpu_vram_delta_mb": null,
+      "wall_duration_ms": {
+        "mean": 8269.52,
+        "median": 8658.59,
+        "min": 5550.21,
+        "max": 11224.15
+      },
+      "prompt_tokens": {
+        "mean": 894.22,
+        "median": 877,
+        "min": 863,
+        "max": 1004
+      },
+      "completion_tokens": {
+        "mean": 91.78,
+        "median": 77,
+        "min": 9,
+        "max": 185
+      },
+      "eval_tps": null,
+      "prompt_eval_tps": null,
+      "wall_tps": {
+        "mean": 11.26,
+        "median": 9.08,
+        "min": 1.07,
+        "max": 23.88
+      }
+    },
+    {
+      "client": "ollama",
+      "model": "qwen3:30b-a3b-q8_0",
+      "n_runs": 9,
+      "n_errors": 0,
+      "n_correct": 9,
+      "n_scored": 9,
+      "accuracy_pct": 100.0,
+      "total_duration_ms": 70667.75,
+      "cold_load_duration_ms": 10625.04,
+      "gpu_vram_used_mb": 39784,
+      "gpu_vram_delta_mb": 36140,
+      "wall_duration_ms": {
+        "mean": 7851.97,
+        "median": 5212.67,
+        "min": 2438.44,
+        "max": 17609.87
+      },
+      "prompt_tokens": {
+        "mean": 2071.56,
+        "median": 1658,
+        "min": 1211,
+        "max": 3583
+      },
+      "completion_tokens": {
+        "mean": 74.11,
+        "median": 62,
+        "min": 6,
+        "max": 160
+      },
+      "eval_tps": {
+        "mean": 175.53,
+        "median": 176.57,
+        "min": 167.96,
+        "max": 185.1
+      },
+      "prompt_eval_tps": {
+        "mean": 11961.1,
+        "median": 12235.23,
+        "min": 8527.18,
+        "max": 18008.05
+      },
+      "wall_tps": {
+        "mean": 11.13,
+        "median": 8.82,
+        "min": 2.46,
+        "max": 22.54
+      }
+    },
+    {
+      "client": "ollama",
+      "model": "gemma3:12b",
+      "n_runs": 9,
+      "n_errors": 0,
+      "n_correct": 8,
+      "n_scored": 9,
+      "accuracy_pct": 88.9,
+      "total_duration_ms": 9520.33,
+      "cold_load_duration_ms": 4428.04,
+      "gpu_vram_used_mb": 31974,
+      "gpu_vram_delta_mb": 28330,
+      "wall_duration_ms": {
+        "mean": 1057.81,
+        "median": 887.99,
+        "min": 382.69,
+        "max": 2032.95
+      },
+      "prompt_tokens": {
+        "mean": 902.22,
+        "median": 885,
+        "min": 871,
+        "max": 1012
+      },
+      "completion_tokens": {
+        "mean": 86.11,
+        "median": 57,
+        "min": 7,
+        "max": 211
+      },
+      "eval_tps": {
+        "mean": 136.52,
+        "median": 136.42,
+        "min": 122.77,
+        "max": 150.6
+      },
+      "prompt_eval_tps": {
+        "mean": 34154.67,
+        "median": 32503.31,
+        "min": 7410.9,
+        "max": 107677.09
+      },
+      "wall_tps": {
+        "mean": 71.24,
+        "median": 67.25,
+        "min": 18.29,
+        "max": 103.79
+      }
+    }
+  ]
+}

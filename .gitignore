@@ -8,3 +8,12 @@ venv/
 *.log
 *.tmp
 notes.md
+
+# Ad-hoc test outputs (smoke tests, temp runs)
+_smoke*
+_temp*
+_docker_test*
+
+# IDE
+.idea/
+.vscode/

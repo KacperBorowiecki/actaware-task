@@ -1,0 +1,116 @@
+{
+  "generated_at": "2026-05-14T13:56:50Z",
+  "host": "http://127.0.0.1:21434",
+  "gen_model": "gemma4:e2b",
+  "emb_model": "qwen3-embedding:4b",
+  "n_emb": 1000,
+  "n_gen": 100,
+  "workers": 48,
+  "total_duration_s": 285.883,
+  "phases": [
+    {
+      "mode": "emb-only",
+      "wall_total_s": 22.297,
+      "vram_mb": {
+        "baseline": 17553,
+        "peak": 17617,
+        "mean": 17575.2,
+        "delta_peak": 64
+      },
+      "by_type": {
+        "emb": {
+          "n_requests": 1000,
+          "n_ok": 1000,
+          "n_errors": 0,
+          "throughput_req_per_s": 44.85,
+          "latency_ms": {
+            "mean": 898.8,
+            "median": 917.5,
+            "p50": 917.5,
+            "p95": 1051.8,
+            "p99": 1081.8,
+            "min": 160.4,
+            "max": 1097.9
+          },
+          "tokens_per_sec_input_aggregate": 3930.3,
+          "embedding_dim": 2560
+        }
+      }
+    },
+    {
+      "mode": "gen-only",
+      "wall_total_s": 102.733,
+      "vram_mb": {
+        "baseline": 17585,
+        "peak": 17597,
+        "mean": 17567.7,
+        "delta_peak": 12
+      },
+      "by_type": {
+        "gen": {
+          "n_requests": 100,
+          "n_ok": 100,
+          "n_errors": 0,
+          "throughput_req_per_s": 0.973,
+          "latency_ms": {
+            "mean": 40403.6,
+            "median": 40627.2,
+            "p50": 40627.2,
+            "p95": 48765.9,
+            "p99": 66822.8,
+            "min": 25857.5,
+            "max": 69492.0
+          },
+          "correctness_pct": 100.0,
+          "tokens_per_sec_completion_aggregate": 85.1
+        }
+      }
+    },
+    {
+      "mode": "mixed",
+      "wall_total_s": 121.883,
+      "vram_mb": {
+        "baseline": 17563,
+        "peak": 17699,
+        "mean": 17581.1,
+        "delta_peak": 136
+      },
+      "by_type": {
+        "emb": {
+          "n_requests": 1000,
+          "n_ok": 1000,
+          "n_errors": 0,
+          "throughput_req_per_s": 8.205,
+          "latency_ms": {
+            "mean": 912.7,
+            "median": 956.8,
+            "p50": 956.8,
+            "p95": 1060.3,
+            "p99": 1288.3,
+            "min": 117.9,
+            "max": 1447.3
+          },
+          "tokens_per_sec_input_aggregate": 719.0,
+          "embedding_dim": 2560
+        },
+        "gen": {
+          "n_requests": 100,
+          "n_ok": 100,
+          "n_errors": 0,
+          "throughput_req_per_s": 0.82,
+          "latency_ms": {
+            "mean": 39002.5,
+            "median": 38105.6,
+            "p50": 38105.6,
+            "p95": 54777.7,
+            "p99": 61051.0,
+            "min": 25130.4,
+            "max": 65863.9
+          },
+          "correctness_pct": 100.0,
+          "tokens_per_sec_completion_aggregate": 72.4
+        }
+      }
+    }
+  ]
+}

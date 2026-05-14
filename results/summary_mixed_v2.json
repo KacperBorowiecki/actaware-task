@@ -1,0 +1,58 @@
+{
+  "generated_at": "2026-05-14T14:19:35Z",
+  "host": "http://127.0.0.1:21434",
+  "gen_model": "gemma4:e2b",
+  "emb_model": "qwen3-embedding:4b",
+  "n_emb": 1000,
+  "n_gen": 100,
+  "workers": 48,
+  "total_duration_s": 130.861,
+  "phases": [
+    {
+      "mode": "mixed",
+      "wall_total_s": 115.873,
+      "vram_mb": {
+        "baseline": 17564,
+        "peak": 17630,
+        "mean": 17586.3,
+        "delta_peak": 66
+      },
+      "by_type": {
+        "emb": {
+          "n_requests": 1000,
+          "n_ok": 1000,
+          "n_errors": 0,
+          "throughput_req_per_s": 8.63,
+          "latency_ms": {
+            "mean": 674.9,
+            "median": 670.9,
+            "p50": 670.9,
+            "p95": 825.2,
+            "p99": 1027.5,
+            "min": 126.0,
+            "max": 1178.1
+          },
+          "tokens_per_sec_input_aggregate": 756.3,
+          "embedding_dim": 2560
+        },
+        "gen": {
+          "n_requests": 100,
+          "n_ok": 100,
+          "n_errors": 0,
+          "throughput_req_per_s": 0.863,
+          "latency_ms": {
+            "mean": 24528.7,
+            "median": 22257.1,
+            "p50": 22257.1,
+            "p95": 40023.1,
+            "p99": 44368.9,
+            "min": 9522.3,
+            "max": 49563.4
+          },
+          "correctness_pct": 100.0,
+          "tokens_per_sec_completion_aggregate": 76.3
+        }
+      }
+    }
+  ]
+}

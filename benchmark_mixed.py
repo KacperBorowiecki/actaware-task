@@ -389,8 +389,8 @@ def main() -> int:
                    help="Comma-separated list. Default: emb-only,gen-only,mixed")
     p.add_argument("--snippets", default="snippets.txt")
     p.add_argument("--expected", default="expected_output.json")
-    p.add_argument("--out", default="benchmarks_mixed.jsonl")
-    p.add_argument("--summary", default="summary_mixed.json")
+    p.add_argument("--out", default="results/benchmarks_mixed.jsonl")
+    p.add_argument("--summary", default="results/summary_mixed.json")
     p.add_argument("--cooldown-s", type=int, default=10)
     args = p.parse_args()
 

@@ -1,0 +1,132 @@
+{
+  "generated_at": "2026-05-14T06:41:43Z",
+  "model": "gemma4:e2b",
+  "requests_per_approach": 100,
+  "snippets_unique": 9,
+  "parallel_workers_per_instance": 8,
+  "client_threads_by_approach": {
+    "approach_1_single_seq": 1,
+    "approach_2_single_parallel": 8,
+    "approach_3_dual_seq": 2,
+    "approach_4_dual_parallel": 16
+  },
+  "hosts": {
+    "host_a": "http://127.0.0.1:11434",
+    "host_b": "http://127.0.0.1:11435"
+  },
+  "total_duration_s": 980.323,
+  "approaches": [
+    {
+      "approach_id": "approach_1_single_seq",
+      "n_requests": 100,
+      "n_ok": 100,
+      "n_errors": 0,
+      "wall_total_s": 275.24,
+      "throughput_req_per_s": 0.363,
+      "tokens_per_sec_completion_aggregate": 32.7,
+      "tokens_per_sec_total_aggregate": 364.5,
+      "latency_ms": {
+        "mean": 2752.3,
+        "median": 2680.6,
+        "p50": 2680.6,
+        "p95": 3516.3,
+        "p99": 3526.5,
+        "min": 1462.2,
+        "max": 3533.3
+      },
+      "vram_mb": {
+        "baseline": 13436,
+        "peak": 13468,
+        "mean": 13449.8,
+        "delta_peak": 32
+      },
+      "n_correct": 100,
+      "n_scored": 100,
+      "correctness_pct": 100.0
+    },
+    {
+      "approach_id": "approach_2_single_parallel",
+      "n_requests": 100,
+      "n_ok": 100,
+      "n_errors": 0,
+      "wall_total_s": 217.223,
+      "throughput_req_per_s": 0.46,
+      "tokens_per_sec_completion_aggregate": 41.2,
+      "tokens_per_sec_total_aggregate": 461.6,
+      "latency_ms": {
+        "mean": 16995.7,
+        "median": 16730.5,
+        "p50": 16730.5,
+        "p95": 23489.6,
+        "p99": 24400.9,
+        "min": 9949.4,
+        "max": 25488.3
+      },
+      "vram_mb": {
+        "baseline": 13462,
+        "peak": 13583,
+        "mean": 13337.2,
+        "delta_peak": 121
+      },
+      "n_correct": 100,
+      "n_scored": 100,
+      "correctness_pct": 100.0
+    },
+    {
+      "approach_id": "approach_3_dual_seq",
+      "n_requests": 100,
+      "n_ok": 100,
+      "n_errors": 0,
+      "wall_total_s": 226.986,
+      "throughput_req_per_s": 0.441,
+      "tokens_per_sec_completion_aggregate": 39.6,
+      "tokens_per_sec_total_aggregate": 442.0,
+      "latency_ms": {
+        "mean": 4507.6,
+        "median": 4592.7,
+        "p50": 4592.7,
+        "p95": 5646.6,
+        "p99": 5834.5,
+        "min": 2051.3,
+        "max": 5875.6
+      },
+      "vram_mb": {
+        "baseline": 22256,
+        "peak": 22408,
+        "mean": 22261.1,
+        "delta_peak": 152
+      },
+      "n_correct": 100,
+      "n_scored": 100,
+      "correctness_pct": 100.0
+    },
+    {
+      "approach_id": "approach_4_dual_parallel",
+      "n_requests": 100,
+      "n_ok": 100,
+      "n_errors": 0,
+      "wall_total_s": 196.163,
+      "throughput_req_per_s": 0.51,
+      "tokens_per_sec_completion_aggregate": 45.8,
+      "tokens_per_sec_total_aggregate": 511.4,
+      "latency_ms": {
+        "mean": 29758.4,
+        "median": 28985.5,
+        "p50": 28985.5,
+        "p95": 42646.2,
+        "p99": 47431.7,
+        "min": 15990.0,
+        "max": 49205.4
+      },
+      "vram_mb": {
+        "baseline": 22237,
+        "peak": 22278,
+        "mean": 22257.0,
+        "delta_peak": 41
+      },
+      "n_correct": 100,
+      "n_scored": 100,
+      "correctness_pct": 100.0
+    }
+  ]
+}

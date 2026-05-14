@@ -303,10 +303,10 @@ def main() -> int:
     )
     p.add_argument("--repeats", type=int, default=1,
                    help="Repetitions per (snippet, model). Default: 1")
-    p.add_argument("--out", default="benchmarks.jsonl",
-                   help="JSONL output path. Default: benchmarks.jsonl")
-    p.add_argument("--summary", default="summary.json",
-                   help="Summary JSON path. Default: summary.json")
+    p.add_argument("--out", default="results/benchmarks.jsonl",
+                   help="JSONL output path. Default: results/benchmarks.jsonl")
+    p.add_argument("--summary", default="results/summary.json",
+                   help="Summary JSON path. Default: results/summary.json")
     p.add_argument("--snippets", default="snippets.txt",
                    help="Snippets file. Default: snippets.txt")
     p.add_argument("--expected", default="expected_output.json",
