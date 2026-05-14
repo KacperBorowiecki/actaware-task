@@ -1,0 +1,17 @@
+.venv/
+venv/
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+.git/
+.gitignore
+.env
+*.log
+*.jsonl
+benchmarks*.jsonl
+summary*.json
+output*.json
+.idea/
+.vscode/
+*.md

@@ -1,0 +1,69 @@
+services:
+  ollama-1:
+    image: ollama/ollama:latest
+    container_name: ollama-1
+    profiles: ["single", "dual"]
+    ports:
+      - "${OLLAMA_1_HOST_PORT:-11434}:11434"
+    volumes:
+      - ollama-models:/root/.ollama
+    environment:
+      CUDA_VISIBLE_DEVICES: "0"
+      OLLAMA_NUM_PARALLEL: ${OLLAMA_NUM_PARALLEL:-24}
+      OLLAMA_CONTEXT_LENGTH: ${OLLAMA_CONTEXT_LENGTH:-4096}
+      OLLAMA_MAX_LOADED_MODELS: ${OLLAMA_MAX_LOADED_MODELS:-1}
+      OLLAMA_HOST: "0.0.0.0:11434"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ["0"]
+              capabilities: [gpu]
+    healthcheck:
+      test: ["CMD", "ollama", "list"]
+      interval: 5s
+      retries: 12
+      start_period: 30s
+
+  ollama-2:
+    image: ollama/ollama:latest
+    container_name: ollama-2
+    profiles: ["dual"]
+    ports:
+      - "${OLLAMA_2_HOST_PORT:-11435}:11434"
+    volumes:
+      - ollama-models:/root/.ollama
+    environment:
+      CUDA_VISIBLE_DEVICES: "0"
+      OLLAMA_NUM_PARALLEL: ${OLLAMA_NUM_PARALLEL:-16}
+      OLLAMA_CONTEXT_LENGTH: ${OLLAMA_CONTEXT_LENGTH:-4096}
+      OLLAMA_MAX_LOADED_MODELS: ${OLLAMA_MAX_LOADED_MODELS:-1}
+      OLLAMA_HOST: "0.0.0.0:11434"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ["0"]
+              capabilities: [gpu]
+    healthcheck:
+      test: ["CMD", "ollama", "list"]
+      interval: 5s
+      retries: 12
+      start_period: 30s
+
+  model-puller:
+    image: ollama/ollama:latest
+    container_name: ollama-model-puller
+    profiles: ["single", "dual"]
+    depends_on:
+      ollama-1:
+        condition: service_healthy
+    environment:
+      OLLAMA_HOST: "http://ollama-1:11434"
+    entrypoint: ["sh", "-c", "ollama pull ${OLLAMA_MODEL:-gemma4:e2b}"]
+    restart: "no"
+
+volumes:
+  ollama-models:
